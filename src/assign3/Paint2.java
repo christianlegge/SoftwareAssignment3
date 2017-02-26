@@ -46,55 +46,49 @@ public class Paint2 extends MouseAdapter implements ActionListener {
                           	
 		// Setup event listeners.  In this case, Paint2 is the
 		// listener for all component events.
-		clearButton.addActionListener(this);
-                redButton.addActionListener(this);
-                greenButton.addActionListener(this);
-                blueButton.addActionListener(this);
-                eraseButton.addActionListener(this);
 		gridPanel.addMouseListener(this);
 		gridPanel.addMouseMotionListener(this);
 		
 		frame.pack();
 		frame.setResizable(false); // Must not be resizable because we aren't
 		frame.setVisible(true);	   // handling changes in size.
+                
+                clearButton.addActionListener((ActionEvent e) -> {
+                    model.clearAll();
+                    gridPanel.repaint();
+                    clearButton.setSelected(false);
+                });
+                
+                redButton.addActionListener((ActionEvent e) -> {
+                    color = CellColor.Red;
+                    eraseButton.setSelected(false);
+                    greenButton.setSelected(false);
+                    blueButton.setSelected(false);
+                });
+                
+                greenButton.addActionListener((ActionEvent e) -> {
+                    color = CellColor.Green;
+                    eraseButton.setSelected(false);
+                    redButton.setSelected(false);
+                    blueButton.setSelected(false);
+                });
+                
+                blueButton.addActionListener((ActionEvent e) -> {
+                    color = CellColor.Blue;
+                    eraseButton.setSelected(false);
+                    redButton.setSelected(false);
+                    greenButton.setSelected(false);
+                });
+                
+                eraseButton.addActionListener((ActionEvent e) -> {
+                    color = CellColor.White;
+                    redButton.setSelected(false);
+                    greenButton.setSelected(false);
+                    blueButton.setSelected(false);
+                });
 	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-            
-            //sets the color to be drawn according to which button has been pressed
-            JToggleButton toggle = (JToggleButton) e.getSource();
-            if(toggle == clearButton){
-                model.clearAll();
-		gridPanel.repaint();
-                clearButton.setSelected(false);
-            }
-            if(toggle == redButton){
-                color = CellColor.Red;
-                eraseButton.setSelected(false);
-                greenButton.setSelected(false);
-                blueButton.setSelected(false);
-            }
-            if(toggle == greenButton){
-                color = CellColor.Green;
-                eraseButton.setSelected(false);
-                redButton.setSelected(false);
-                blueButton.setSelected(false);
-            }
-            if(toggle == blueButton){
-                color = CellColor.Blue;
-                eraseButton.setSelected(false);
-                redButton.setSelected(false);
-                greenButton.setSelected(false);
-            }
-            if(toggle == eraseButton){
-                color = CellColor.White;
-                redButton.setSelected(false);
-                greenButton.setSelected(false);
-                blueButton.setSelected(false);
-            }
-        }
         
+        @Override
 	public void mousePressed(MouseEvent e) {
 		int cellX = e.getX() / gridPanel.getCellWidth();
 		int cellY = e.getY() / gridPanel.getCellHeight();
@@ -106,16 +100,20 @@ public class Paint2 extends MouseAdapter implements ActionListener {
 		}
 	}
 	        
+        @Override
 	public void mouseDragged(MouseEvent e) {
 		mousePressed(e);
 	}
 	
 	public static void main(String[] args) throws Exception {		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new Paint2();
-			}
-		});
+		SwingUtilities.invokeLater(() -> {
+                    new Paint2();
+                });
 	}
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 

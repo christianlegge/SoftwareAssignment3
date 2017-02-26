@@ -5,15 +5,12 @@ import assign3.CellColor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.HashSet;
-import java.util.Set;
 import javax.swing.JPanel;
 
 public class GridPanel extends JPanel {
 	// Width and height of an individual cell.
 	int cw, ch;
 	GridModel model;
-        String color;
 	
 	GridPanel(int width, int height, GridModel model) {
 		setPreferredSize(new Dimension(width, height));
@@ -23,6 +20,7 @@ public class GridPanel extends JPanel {
 		ch = height / model.getHeight();
 	}
 	
+        @Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
@@ -30,26 +28,29 @@ public class GridPanel extends JPanel {
 		g.setColor(Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
+                //draw or erase based on button pressed
 		for (int i=0; i<model.getWidth(); i++)
 			for (int j=0; j<model.getHeight(); j++)
-				if (model.getValue(i,j) == CellColor.Blue){
-                                    g.setColor(Color.blue);
-                                    g.fillRect(i*cw, j*ch, cw, ch);
-                                }
-                                else if (model.getValue(i,j) == CellColor.Red){
-                                    g.setColor(Color.red);
-                                    g.fillRect(i*cw, j*ch, cw, ch);
-                                } 
-                                        
-                                else if (model.getValue(i,j) == CellColor.Green){
-                                    g.setColor(Color.green);
-                                    g.fillRect(i*cw, j*ch, cw, ch);
-                                }
-                                    
-                                else if (model.getValue(i,j) == CellColor.White){
-                                    g.setColor(Color.white);
-                                    g.fillRect(i*cw, j*ch, cw, ch);
-                                }
+				if (null != model.getValue(i,j))switch (model.getValue(i,j)) {
+                        case Blue:
+                            g.setColor(Color.blue);
+                            g.fillRect(i*cw, j*ch, cw, ch);
+                            break;
+                        case Red:
+                            g.setColor(Color.red);
+                            g.fillRect(i*cw, j*ch, cw, ch);
+                            break;
+                        case Green:
+                            g.setColor(Color.green);
+                            g.fillRect(i*cw, j*ch, cw, ch);
+                            break;
+                        case White:
+                            g.setColor(Color.white);
+                            g.fillRect(i*cw, j*ch, cw, ch);
+                            break;
+                        default:
+                            break;
+                    }
 	}
 	
 	public int getCellWidth() {
@@ -59,8 +60,4 @@ public class GridPanel extends JPanel {
 	public int getCellHeight() {
 		return ch;
 	}
-        
-        public void colorSet(String c){
-            color = c;
-        }
 }
