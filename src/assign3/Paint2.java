@@ -5,12 +5,13 @@
  * 
  * @author Andrew Vardy
  */
-import assign3.CellColor;
+package assign3;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -24,8 +25,11 @@ public class Paint2 extends MouseAdapter implements ActionListener {
         JToggleButton greenButton = new JToggleButton("Green");
         JToggleButton blueButton = new JToggleButton("Blue");
         JToggleButton eraseButton = new JToggleButton("Erase");
+        JButton undoButton = new JButton("Undo");
+        JButton redoButton = new JButton("Redo");
         CellColor color = CellColor.White;
-       
+        Stack<PaintCommand> undoStack = new Stack();
+        Stack<PaintCommand> redoStack = new Stack();
 	
 	public Paint2() {
 		// Initialize frame and add the paintPanel in the center
@@ -42,7 +46,13 @@ public class Paint2 extends MouseAdapter implements ActionListener {
                 buttonPanel.add(greenButton);
                 buttonPanel.add(blueButton);
                 buttonPanel.add(eraseButton);
+                buttonPanel.add(undoButton);
+                buttonPanel.add(redoButton);
 		frame.add(buttonPanel, BorderLayout.WEST);
+                
+                // Can't undo or redo before anything is done
+                undoButton.setEnabled(false);
+                redoButton.setEnabled(false);
                           	
 		// Setup event listeners.  In this case, Paint2 is the
 		// listener for all component events.
@@ -54,9 +64,15 @@ public class Paint2 extends MouseAdapter implements ActionListener {
 		frame.setVisible(true);	   // handling changes in size.
                 
                 clearButton.addActionListener((ActionEvent e) -> {
-                    model.clearAll();
+                    PaintCommand com = new ClearCommand(model);
+                    undoStack.push(com);
+                    com.execute();
                     gridPanel.repaint();
-                   // clearButton.setSelected(false);
+                    
+                    undoButton.setEnabled(true);
+                    // Can't redo after making new change
+                    redoStack.clear();
+                    redoButton.setEnabled(false);
                 });
                 
                 redButton.addActionListener((ActionEvent e) -> {
@@ -91,6 +107,31 @@ public class Paint2 extends MouseAdapter implements ActionListener {
                     blueButton.setSelected(false);
                 });
                 
+                undoButton.addActionListener((ActionEvent e) -> {
+                    PaintCommand com = undoStack.pop();
+                    com.undo();
+                    redoStack.push(com);
+                    gridPanel.repaint();
+                    
+                    redoButton.setEnabled(true);
+                    if (undoStack.isEmpty()) {
+                        undoButton.setEnabled(false);
+                    }
+                        
+                });
+                
+                redoButton.addActionListener((ActionEvent e) -> {
+                    PaintCommand com = redoStack.pop();
+                    com.undo();
+                    undoStack.push(com);
+                    gridPanel.repaint();
+                    
+                    undoButton.setEnabled(true);
+                    if (redoStack.isEmpty()) {
+                        redoButton.setEnabled(false);
+                    }
+                });
+                
                 // Set color to Red by default
                 redButton.doClick();
 	}
@@ -102,8 +143,16 @@ public class Paint2 extends MouseAdapter implements ActionListener {
 		
 		if (cellX >= 0 && cellX < model.getWidth() && 
 			cellY >= 0 && cellY < model.getHeight()) {
-			model.setValue(cellX, cellY, color);
+                    
+                        ClickCommand com = new ClickCommand(cellX, cellY, color, model);
+                        undoStack.push(com);
+                        com.execute();
 			gridPanel.repaint();
+                        
+                        undoButton.setEnabled(true);
+                        // Can't redo after making new change
+                        redoStack.clear();
+                        redoButton.setEnabled(false);
 		}
 	}
 	        

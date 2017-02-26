@@ -1,5 +1,4 @@
-
-import assign3.CellColor;
+package assign3;
 
 /**
  * Represents a 2-D array of boolean values.

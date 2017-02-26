@@ -1,7 +1,7 @@
 /**
  * A JPanel that provides a view of a GridModel.
  */
-import assign3.CellColor;
+package assign3;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
