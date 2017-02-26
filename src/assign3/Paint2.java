@@ -19,7 +19,7 @@ public class Paint2 extends MouseAdapter implements ActionListener {
 	GridModel model = new GridModel(100, 100);
 	JFrame frame = new JFrame("Paint2");
 	GridPanel gridPanel = new GridPanel(400, 400, model);
-	JToggleButton clearButton = new JToggleButton("Clear");
+	JButton clearButton = new JButton("Clear");
         JToggleButton redButton = new JToggleButton("Red");
         JToggleButton greenButton = new JToggleButton("Green");
         JToggleButton blueButton = new JToggleButton("Blue");
@@ -36,11 +36,11 @@ public class Paint2 extends MouseAdapter implements ActionListener {
 		// Create a panel on the left for buttons and add
 		// the buttons to it
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));		
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));	
 		buttonPanel.add(clearButton);
-                buttonPanel.add(blueButton);
                 buttonPanel.add(redButton);
                 buttonPanel.add(greenButton);
+                buttonPanel.add(blueButton);
                 buttonPanel.add(eraseButton);
 		frame.add(buttonPanel, BorderLayout.WEST);
                           	
@@ -56,12 +56,13 @@ public class Paint2 extends MouseAdapter implements ActionListener {
                 clearButton.addActionListener((ActionEvent e) -> {
                     model.clearAll();
                     gridPanel.repaint();
-                    clearButton.setSelected(false);
+                   // clearButton.setSelected(false);
                 });
                 
                 redButton.addActionListener((ActionEvent e) -> {
                     color = CellColor.Red;
                     eraseButton.setSelected(false);
+                    redButton.setSelected(true);
                     greenButton.setSelected(false);
                     blueButton.setSelected(false);
                 });
@@ -70,6 +71,7 @@ public class Paint2 extends MouseAdapter implements ActionListener {
                     color = CellColor.Green;
                     eraseButton.setSelected(false);
                     redButton.setSelected(false);
+                    greenButton.setSelected(true);
                     blueButton.setSelected(false);
                 });
                 
@@ -78,14 +80,19 @@ public class Paint2 extends MouseAdapter implements ActionListener {
                     eraseButton.setSelected(false);
                     redButton.setSelected(false);
                     greenButton.setSelected(false);
+                    blueButton.setSelected(true);
                 });
                 
                 eraseButton.addActionListener((ActionEvent e) -> {
                     color = CellColor.White;
+                    eraseButton.setSelected(true);
                     redButton.setSelected(false);
                     greenButton.setSelected(false);
                     blueButton.setSelected(false);
                 });
+                
+                // Set color to Red by default
+                redButton.doClick();
 	}
         
         @Override
